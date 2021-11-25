@@ -8,16 +8,89 @@ import (
 
 //Order -
 type Ticket struct {
-	Ticketid    string `json:"ticket_id"`
-	Description string `json:"description"`
-	Status		string `json:"status"`
-	Customername string `json:"customer_name"`
-	ContactName string `json:"contact_name"`
-	Created     time.Time `json:"created"`
+	Ticketid     string    `json:"ticket_id"`
+	Description  string    `json:"description"`
+	Status       string    `json:"status"`
+	Customername string    `json:"customer_name"`
+	ContactName  string    `json:"contact_name"`
+	Created      time.Time `json:"created"`
 }
+
+type ProductServiceCategories struct {
+	Id        string `json:"id"`
+	ProductId string `json:"product_id"`
+}
+type ServiceCatalogLvL struct {
+	Id          string `json:"id"`
+	ParentId    string `json:"parent_id"`
+	Description string `json:"description"`
+}
+
+/*
+type ServiceCatalogLvL2 struct {
+	Id          string `json:"id"`
+	ParentId    string `json:"parent_id"`
+	Description string `json:"description"`
+}
+type ServiceCatalogLvL3 struct {
+	Id          string `json:"id"`
+	ParentId    string `json:"parent_id"`
+	Description string `json:"description"`
+}
+type ServiceCatalogLvL4 struct {
+	Id          string `json:"id"`
+	ParentId    string `json:"parent_id"`
+	Description string `json:"description"`
+}
+type ServiceCatalogLvL5 struct {
+	Id          string `json:"id"`
+	ParentId    string `json:"parent_id"`
+	Description string `json:"description"`
+}
+type ServiceCatalogLvL6 struct {
+	Id          string `json:"id"`
+	ParentId    string `json:"parent_id"`
+	Description string `json:"description"`
+}
+*/
 
 type RowsAffected struct {
 	RowsAffected int64
+}
+
+func (s *Server) GetProductServiceCategories(id string) ([]ProductServiceCategories, error) {
+	tsql := fmt.Sprintf("SELECT * FROM ProductServiceCategories WHERE id=@p1;")
+	return s.queryProductServiceCategories(tsql, id)
+}
+
+func (s *Server) GetServiceCatalogLvL1(id string) ([]ServiceCatalogLvL, error) {
+	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL1 WHERE parent_id=@p1;")
+	return s.queryServiceCatalogLvL(tsql, id)
+}
+
+func (s *Server) GetServiceCatalogLvL2(id string) ([]ServiceCatalogLvL, error) {
+	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL2 WHERE parent_id=@p1;")
+	return s.queryServiceCatalogLvL(tsql, id)
+}
+
+func (s *Server) GetServiceCatalogLvL3(id string) ([]ServiceCatalogLvL, error) {
+	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL3 WHERE parent_id=@p1;")
+	return s.queryServiceCatalogLvL(tsql, id)
+}
+
+func (s *Server) GetServiceCatalogLvL4(id string) ([]ServiceCatalogLvL, error) {
+	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL4 WHERE parent_id=@p1;")
+	return s.queryServiceCatalogLvL(tsql, id)
+}
+
+func (s *Server) GetServiceCatalogLvL5(id string) ([]ServiceCatalogLvL, error) {
+	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL5 WHERE parent_id=@p1;")
+	return s.queryServiceCatalogLvL(tsql, id)
+}
+
+func (s *Server) GetServiceCatalogLvL6(id string) ([]ServiceCatalogLvL, error) {
+	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL6 WHERE parent_id=@p1;")
+	return s.queryServiceCatalogLvL(tsql, id)
 }
 
 func (s *Server) GetTicket(ticket_id string) ([]Ticket, error) {
@@ -73,6 +146,66 @@ func (s *Server) exec(tsql string, args ...interface{}) (RowsAffected, error) {
 
 }
 
+func (s *Server) queryProductServiceCategories(tsql string, args ...interface{}) ([]ProductServiceCategories, error) {
+
+	s.getConnection()
+
+	category := ProductServiceCategories{}
+	categories := []ProductServiceCategories{}
+
+	log.Printf("Executing SQL: %s \n", tsql)
+	log.Printf("With args: %s \n", args...)
+
+	rows, err := s.db.Query(tsql, args...)
+
+	if err != nil {
+		log.Println("failed...")
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&category.Id, &category.ProductId)
+		if err != nil {
+			return nil, err
+		}
+		categories = append(categories, category)
+	}
+
+	return categories, nil
+}
+
+func (s *Server) queryServiceCatalogLvL(tsql string, args ...interface{}) ([]ServiceCatalogLvL, error) {
+
+	s.getConnection()
+
+	category := ServiceCatalogLvL{}
+	categories := []ServiceCatalogLvL{}
+
+	log.Printf("Executing SQL: %s \n", tsql)
+	log.Printf("With args: %s \n", args...)
+
+	rows, err := s.db.Query(tsql, args...)
+
+	if err != nil {
+		log.Println("failed...")
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&category.Id, &category.ParentId, &category.Description)
+		if err != nil {
+			return nil, err
+		}
+		categories = append(categories, category)
+	}
+
+	return categories, nil
+}
+
 func (s *Server) query(tsql string, args ...interface{}) ([]Ticket, error) {
 
 	s.getConnection()
@@ -93,7 +226,7 @@ func (s *Server) query(tsql string, args ...interface{}) ([]Ticket, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&ticket.Ticketid, &ticket.Description, &ticket.Created)
+		err := rows.Scan(&ticket.Ticketid, &ticket.Description, &ticket.Status, &ticket.Customername, &ticket.ContactName, &ticket.Created)
 		if err != nil {
 			return nil, err
 		}

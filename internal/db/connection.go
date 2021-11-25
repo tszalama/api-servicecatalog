@@ -6,7 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/SAP-samples/kyma-runtime-extension-samples/api-mssql-go/internal/config"
+	//"github.com/SAP-samples/kyma-runtime-extension-samples/api-mssql-go/internal/config"
+	"github.com/tz19003/KymaTickets/tree/master/internal/config"
 	_ "github.com/denisenkom/go-mssqldb"
 )
 

@@ -6,5 +6,5 @@ metadata:
     app: api-mssql-go
 data:
   database: TicketDB
-  host: mssql.dev.svc.cluster.local
+  host: mssql.default.svc.cluster.local
   port: "1433"

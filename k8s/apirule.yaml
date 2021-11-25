@@ -15,6 +15,6 @@ spec:
         - PUT
         - DELETE
   service:
-    host: api-mssql-go
+    host: api-mssql-go-ticket
     name: api-mssql-go
     port: 80
