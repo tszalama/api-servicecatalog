@@ -5,7 +5,7 @@ metadata:
 spec:
   gateway: kyma-gateway.kyma-system.svc.cluster.local
   rules:
-    - path: /tickets|/tickets/.*
+    - path: /tickets|/tickets/.*|/productservicecategories/.*|/servicecataloglvl1/.*|/servicecataloglvl2/.*|/servicecataloglvl3/.*|/servicecataloglvl4/.*|/servicecataloglvl5/.*|/servicecataloglvl6/.*|/productservicecategories|/servicecataloglvl1|/servicecataloglvl2|/servicecataloglvl3|/servicecataloglvl4|/servicecataloglvl5|/servicecataloglvl6
       accessStrategies:
         - config: {}
           handler: noop
@@ -15,6 +15,6 @@ spec:
         - PUT
         - DELETE
   service:
-    host: api-mssql-go-ticket
+    host: api-mssql-go-servicecat
     name: api-mssql-go
     port: 80

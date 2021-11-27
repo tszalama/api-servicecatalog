@@ -17,42 +17,15 @@ type ticketData struct {
 	ContactName  string `json:"contact_name"`
 }
 
-/*
 type ProductServiceCategories struct {
-	Id    string `json:"id"`
+	Id        string `json:"id"`
 	ProductId string `json:"product_id"`
 }
-type ServiceCatalogLvL1 struct {
-	Id    string `json:"id"`
-	ParentId string `json:"parent_id"`
+type ServiceCatalogLvL struct {
+	Id          string `json:"id"`
+	ParentId    string `json:"parent_id"`
 	Description string `json:"description"`
 }
-type ServiceCatalogLvL2 struct {
-	Id    string `json:"id"`
-	ParentId string `json:"parent_id"`
-	Description string `json:"description"`
-}
-type ServiceCatalogLvL3 struct {
-	Id    string `json:"id"`
-	ParentId string `json:"parent_id"`
-	Description string `json:"description"`
-}
-type ServiceCatalogLvL4 struct {
-	Id    string `json:"id"`
-	ParentId string `json:"parent_id"`
-	Description string `json:"description"`
-}
-type ServiceCatalogLvL5 struct {
-	Id    string `json:"id"`
-	ParentId string `json:"parent_id"`
-	Description string `json:"description"`
-}
-type ServiceCatalogLvL6 struct {
-	Id    string `json:"id"`
-	ParentId string `json:"parent_id"`
-	Description string `json:"description"`
-}
-*/
 
 type server struct {
 	db *db.Server
@@ -160,6 +133,181 @@ func (s *server) GetServiceCatalogLvL6(w http.ResponseWriter, r *http.Request) {
 
 	id := strings.Split(r.URL.Path, "/")[2]
 	categories, err := s.db.GetServiceCatalogLvL6(id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) AddProductServiceCategories(w http.ResponseWriter, r *http.Request) {
+
+	var category ProductServiceCategories
+
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&category)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	categories, err := s.db.AddProductServiceCategories(category.ProductId)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) AddServiceCatalogLvL1(w http.ResponseWriter, r *http.Request) {
+
+	var category ServiceCatalogLvL
+
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&category)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	categories, err := s.db.AddServiceCatalogLvL1(category.ParentId, category.Description)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) AddServiceCatalogLvL2(w http.ResponseWriter, r *http.Request) {
+
+	var category ServiceCatalogLvL
+
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&category)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	categories, err := s.db.AddServiceCatalogLvL2(category.ParentId, category.Description)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) AddServiceCatalogLvL3(w http.ResponseWriter, r *http.Request) {
+
+	var category ServiceCatalogLvL
+
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&category)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	categories, err := s.db.AddServiceCatalogLvL3(category.ParentId, category.Description)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) AddServiceCatalogLvL4(w http.ResponseWriter, r *http.Request) {
+
+	var category ServiceCatalogLvL
+
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&category)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	categories, err := s.db.AddServiceCatalogLvL4(category.ParentId, category.Description)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) AddServiceCatalogLvL5(w http.ResponseWriter, r *http.Request) {
+
+	var category ServiceCatalogLvL
+
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&category)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	categories, err := s.db.AddServiceCatalogLvL5(category.ParentId, category.Description)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) AddServiceCatalogLvL6(w http.ResponseWriter, r *http.Request) {
+
+	var category ServiceCatalogLvL
+
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&category)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	categories, err := s.db.AddServiceCatalogLvL6(category.ParentId, category.Description)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

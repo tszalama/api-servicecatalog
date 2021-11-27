@@ -15,7 +15,7 @@ spec:
         app: api-mssql-go
     spec:
       containers:
-        - image: tszalama/api-mssql-go-ticket:latest #change it to your image
+        - image: tszalama/api-mssql-go-servicecat:latest #change it to your image
           imagePullPolicy: Always
           name: api-mssql-go
           ports:

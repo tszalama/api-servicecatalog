@@ -36,6 +36,14 @@ func main() {
 	router.HandleFunc("/servicecataloglvl5/{id}", apiServer.GetServiceCatalogLvL5).Methods("GET")
 	router.HandleFunc("/servicecataloglvl6/{id}", apiServer.GetServiceCatalogLvL6).Methods("GET")
 
+	router.HandleFunc("/productservicecategories", apiServer.AddProductServiceCategories).Methods("POST")
+	router.HandleFunc("/servicecataloglvl1", apiServer.AddServiceCatalogLvL1).Methods("POST")
+	router.HandleFunc("/servicecataloglvl2", apiServer.AddServiceCatalogLvL2).Methods("POST")
+	router.HandleFunc("/servicecataloglvl3", apiServer.AddServiceCatalogLvL3).Methods("POST")
+	router.HandleFunc("/servicecataloglvl4", apiServer.AddServiceCatalogLvL4).Methods("POST")
+	router.HandleFunc("/servicecataloglvl5", apiServer.AddServiceCatalogLvL5).Methods("POST")
+	router.HandleFunc("/servicecataloglvl6", apiServer.AddServiceCatalogLvL6).Methods("POST")
+
 	//router.HandleFunc("/orderCodeEvent", apiServer.ConsumeOrderCode).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8000", router))
