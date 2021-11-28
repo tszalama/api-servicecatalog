@@ -9,6 +9,7 @@ import (
 	"github.com/tz19003/KymaTickets/tree/master/internal/db"
 )
 
+/*
 type ticketData struct {
 	Ticketid     string `json:"ticket_id"`
 	Description  string `json:"description"`
@@ -16,6 +17,7 @@ type ticketData struct {
 	Customername string `json:"customer_name"`
 	ContactName  string `json:"contact_name"`
 }
+*/
 
 type ProductServiceCategories struct {
 	Id        string `json:"id"`
@@ -41,6 +43,21 @@ func (s *server) GetProductServiceCategories(w http.ResponseWriter, r *http.Requ
 
 	id := strings.Split(r.URL.Path, "/")[2]
 	categories, err := s.db.GetProductServiceCategories(id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) GetAllProductServiceCategories(w http.ResponseWriter, r *http.Request) {
+
+	categories, err := s.db.GetAllProductServiceCategories()
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -320,6 +337,49 @@ func (s *server) AddServiceCatalogLvL6(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+func (s *server) DeleteProductServiceCategories(w http.ResponseWriter, r *http.Request) {
+
+	url := r.URL.Path
+
+	id := strings.Split(url, "/")[2]
+
+	var rowsEffected db.RowsAffected
+	var err error
+
+	if strings.Contains(url, "productservicecategories") {
+		rowsEffected, err = s.db.DeleteProductServiceCategories(id)
+	}
+	if strings.Contains(url, "servicecataloglvl1") {
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL1(id)
+	}
+	if strings.Contains(url, "servicecataloglvl2") {
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL2(id)
+	}
+	if strings.Contains(url, "servicecataloglvl3") {
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL3(id)
+	}
+	if strings.Contains(url, "servicecataloglvl4") {
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL4(id)
+	}
+	if strings.Contains(url, "servicecataloglvl5") {
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL5(id)
+	}
+	if strings.Contains(url, "servicecataloglvl6") {
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL6(id)
+	}
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(rowsEffected)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+/*
 //old
 func (s *server) GetTicket(w http.ResponseWriter, r *http.Request) {
 
@@ -410,3 +470,4 @@ func (s *server) DeleteTicket(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }
+*/
