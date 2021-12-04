@@ -3,22 +3,22 @@ package db
 import (
 	"fmt"
 	"log"
-	"time"
 )
 
-//Order -
-type Ticket struct {
-	Ticketid     string    `json:"ticket_id"`
-	Description  string    `json:"description"`
-	Status       string    `json:"status"`
-	Customername string    `json:"customer_name"`
-	ContactName  string    `json:"contact_name"`
-	Created      time.Time `json:"created"`
+type TicketCategories struct {
+	Ticketid       string `json:"ticket_id"`
+	Productid      string `json:"product_id"`
+	CategoryIdLvl1 string `json:"category_id_lvl1"`
+	CategoryIdLvl2 string `json:"category_id_lvl2"`
+	CategoryIdLvl3 string `json:"category_id_lvl3"`
+	CategoryIdLvl4 string `json:"category_id_lvl4"`
+	CategoryIdLvl5 string `json:"category_id_lvl5"`
+	CategoryIdLvl6 string `json:"category_id_lvl6"`
 }
 
 type ProductServiceCategories struct {
-	Id        string `json:"id"`
-	ProductId string `json:"product_id"`
+	Id          string `json:"id"`
+	Description string `json:"description"`
 }
 type ServiceCatalogLvL struct {
 	Id          string `json:"id"`
@@ -30,8 +30,27 @@ type RowsAffected struct {
 	RowsAffected int64
 }
 
+func (s *Server) GetTicketCategories(id string) ([]TicketCategories, error) {
+	tsql := fmt.Sprintf("SELECT * FROM TicketCategories WHERE ticket_id=@p1;")
+	return s.queryTicketCategories(tsql, id)
+}
+
+func (s *Server) AddTicketCategories(Ticketid string, Productid string, CategoryIdLvl1 string, CategoryIdLvl2 string,
+	CategoryIdLvl3 string, CategoryIdLvl4 string, CategoryIdLvl5 string, CategoryIdLvl6 string) ([]TicketCategories, error) {
+	//tsqlExec := fmt.Sprintf("INSERT INTO ProductServiceCategories(product_id) VALUES(@p1);")
+	tsqlQuery := fmt.Sprintf("INSERT INTO TicketCategories(ticket_id,product_id,category_id_lvl1,category_id_lvl2,category_id_lvl3,category_id_lvl4,category_id_lvl5,category_id_lvl6) VALUES(@p1,@p2,@p3,@p4,@p5,@p6,@p7,@p8); SELECT * FROM TicketCategories WHERE ticket_id=@p1;")
+
+	return s.queryTicketCategories(tsqlQuery, Ticketid, Productid, CategoryIdLvl1, CategoryIdLvl2,
+		CategoryIdLvl3, CategoryIdLvl4, CategoryIdLvl5, CategoryIdLvl6)
+}
+
+func (s *Server) DeleteTicketCategories(id string) (RowsAffected, error) {
+	tsql := fmt.Sprintf("DELETE FROM TicketCategories WHERE ticket_id=@p1")
+	return s.deleteEntry(tsql, id)
+}
+
 func (s *Server) GetProductServiceCategories(id string) ([]ProductServiceCategories, error) {
-	tsql := fmt.Sprintf("SELECT * FROM ProductServiceCategories WHERE product_id=@p1;")
+	tsql := fmt.Sprintf("SELECT * FROM ProductServiceCategories WHERE id=@p1;")
 	return s.queryProductServiceCategories(tsql, id)
 }
 
@@ -83,11 +102,11 @@ func (s *Server) AddProductServiceCategories(product_id string) ([]ProductServic
 }
 */
 //TEST ------------------------------------
-func (s *Server) AddProductServiceCategories(product_id string) ([]ProductServiceCategories, error) {
+func (s *Server) AddProductServiceCategories(id string, description string) ([]ProductServiceCategories, error) {
 	//tsqlExec := fmt.Sprintf("INSERT INTO ProductServiceCategories(product_id) VALUES(@p1);")
-	tsqlQuery := fmt.Sprintf("INSERT INTO ProductServiceCategories(product_id) VALUES(@p1); SELECT * FROM ProductServiceCategories WHERE id = SCOPE_IDENTITY();")
+	tsqlQuery := fmt.Sprintf("INSERT INTO ProductServiceCategories(id,description) VALUES(@p1,@p2); SELECT * FROM ProductServiceCategories WHERE id = @p1;")
 
-	return s.queryProductServiceCategories(tsqlQuery, product_id)
+	return s.queryProductServiceCategories(tsqlQuery, id, description)
 }
 
 func (s *Server) AddServiceCatalogLvL1(parent_id string, description string) ([]ServiceCatalogLvL, error) {
@@ -97,7 +116,7 @@ func (s *Server) AddServiceCatalogLvL1(parent_id string, description string) ([]
 }
 
 func (s *Server) AddServiceCatalogLvL2(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL2(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL1 WHERE id = SCOPE_IDENTITY();")
+	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL2(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL2 WHERE id = SCOPE_IDENTITY();")
 
 	return s.queryServiceCatalogLvL(tsqlQuerry, parent_id, description)
 }
@@ -287,6 +306,34 @@ func (s *Server) deleteEntry(tsql string, args ...interface{}) (RowsAffected, er
 }
 
 //TEST----------------------------------------------------------------------------------------------------------
+func (s *Server) queryTicketCategories(tsqlQuery string, args ...interface{}) ([]TicketCategories, error) {
+
+	s.getConnection()
+
+	category := TicketCategories{}
+	categories := []TicketCategories{}
+
+	log.Printf("SQL Start: %s \n", tsqlQuery)
+	log.Printf("Script: %s \n", args...)
+
+	rows, err := s.db.Query(tsqlQuery, args...)
+
+	if err != nil {
+		log.Println("Query failed")
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&category.Ticketid, &category.Productid, &category.CategoryIdLvl1, &category.CategoryIdLvl2, &category.CategoryIdLvl3, &category.CategoryIdLvl4, &category.CategoryIdLvl5, &category.CategoryIdLvl6)
+		if err != nil {
+			return nil, err
+		}
+		categories = append(categories, category)
+	}
+	return categories, nil
+}
+
 func (s *Server) queryAllProductCategories(tsqlQuery string) ([]ProductServiceCategories, error) {
 
 	s.getConnection()
@@ -305,7 +352,7 @@ func (s *Server) queryAllProductCategories(tsqlQuery string) ([]ProductServiceCa
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&category.Id, &category.ProductId)
+		err := rows.Scan(&category.Id, &category.Description)
 		if err != nil {
 			return nil, err
 		}
@@ -333,7 +380,7 @@ func (s *Server) queryProductServiceCategories(tsqlQuery string, args ...interfa
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&category.Id, &category.ProductId)
+		err := rows.Scan(&category.Id, &category.Description)
 		if err != nil {
 			return nil, err
 		}

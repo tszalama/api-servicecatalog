@@ -31,6 +31,7 @@ func main() {
 
 	router.HandleFunc("/productservicecategories/{id}", apiServer.GetProductServiceCategories).Methods("GET")
 	router.HandleFunc("/productservicecategories", apiServer.GetAllProductServiceCategories).Methods("GET")
+	router.HandleFunc("/ticketcategories/{id}", apiServer.GetTicketCategories).Methods("GET")
 	router.HandleFunc("/servicecataloglvl1/{id}", apiServer.GetServiceCatalogLvL1).Methods("GET")
 	router.HandleFunc("/servicecataloglvl2/{id}", apiServer.GetServiceCatalogLvL2).Methods("GET")
 	router.HandleFunc("/servicecataloglvl3/{id}", apiServer.GetServiceCatalogLvL3).Methods("GET")
@@ -39,6 +40,7 @@ func main() {
 	router.HandleFunc("/servicecataloglvl6/{id}", apiServer.GetServiceCatalogLvL6).Methods("GET")
 
 	router.HandleFunc("/productservicecategories", apiServer.AddProductServiceCategories).Methods("POST")
+	router.HandleFunc("/ticketcategories", apiServer.AddTicketCategories).Methods("POST")
 	router.HandleFunc("/servicecataloglvl1", apiServer.AddServiceCatalogLvL1).Methods("POST")
 	router.HandleFunc("/servicecataloglvl2", apiServer.AddServiceCatalogLvL2).Methods("POST")
 	router.HandleFunc("/servicecataloglvl3", apiServer.AddServiceCatalogLvL3).Methods("POST")
@@ -47,6 +49,7 @@ func main() {
 	router.HandleFunc("/servicecataloglvl6", apiServer.AddServiceCatalogLvL6).Methods("POST")
 
 	router.HandleFunc("/productservicecategories/{id}", apiServer.DeleteProductServiceCategories).Methods("DELETE")
+	router.HandleFunc("/ticketcategories/{id}", apiServer.DeleteProductServiceCategories).Methods("DELETE")
 	router.HandleFunc("/servicecataloglvl1/{id}", apiServer.DeleteProductServiceCategories).Methods("DELETE")
 	router.HandleFunc("/servicecataloglvl2/{id}", apiServer.DeleteProductServiceCategories).Methods("DELETE")
 	router.HandleFunc("/servicecataloglvl3/{id}", apiServer.DeleteProductServiceCategories).Methods("DELETE")

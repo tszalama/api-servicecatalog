@@ -9,19 +9,20 @@ import (
 	"github.com/tz19003/KymaTickets/tree/master/internal/db"
 )
 
-/*
-type ticketData struct {
-	Ticketid     string `json:"ticket_id"`
-	Description  string `json:"description"`
-	Status       string `json:"status"`
-	Customername string `json:"customer_name"`
-	ContactName  string `json:"contact_name"`
+type TicketCategories struct {
+	Ticketid       string `json:"ticket_id"`
+	Productid      string `json:"product_id"`
+	CategoryIdLvl1 string `json:"category_id_lvl1"`
+	CategoryIdLvl2 string `json:"category_id_lvl2"`
+	CategoryIdLvl3 string `json:"category_id_lvl3"`
+	CategoryIdLvl4 string `json:"category_id_lvl4"`
+	CategoryIdLvl5 string `json:"category_id_lvl5"`
+	CategoryIdLvl6 string `json:"category_id_lvl6"`
 }
-*/
 
 type ProductServiceCategories struct {
-	Id        string `json:"id"`
-	ProductId string `json:"product_id"`
+	Id          string `json:"id"`
+	Description string `json:"description"`
 }
 type ServiceCatalogLvL struct {
 	Id          string `json:"id"`
@@ -37,6 +38,22 @@ func InitAPIServer() *server {
 	server := &server{}
 	server.db = db.InitDatabase()
 	return server
+}
+
+func (s *server) GetTicketCategories(w http.ResponseWriter, r *http.Request) {
+
+	id := strings.Split(r.URL.Path, "/")[2]
+	categories, err := s.db.GetTicketCategories(id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
 }
 
 func (s *server) GetProductServiceCategories(w http.ResponseWriter, r *http.Request) {
@@ -119,7 +136,7 @@ func (s *server) GetServiceCatalogLvL3(w http.ResponseWriter, r *http.Request) {
 func (s *server) GetServiceCatalogLvL4(w http.ResponseWriter, r *http.Request) {
 
 	id := strings.Split(r.URL.Path, "/")[2]
-	categories, err := s.db.GetServiceCatalogLvL5(id)
+	categories, err := s.db.GetServiceCatalogLvL4(id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -174,7 +191,32 @@ func (s *server) AddProductServiceCategories(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	categories, err := s.db.AddProductServiceCategories(category.ProductId)
+	categories, err := s.db.AddProductServiceCategories(category.Id, category.Description)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, _ := json.Marshal(categories)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+}
+
+func (s *server) AddTicketCategories(w http.ResponseWriter, r *http.Request) {
+
+	var category TicketCategories
+
+	defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(&category)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	categories, err := s.db.AddTicketCategories(category.Ticketid, category.Productid, category.CategoryIdLvl1, category.CategoryIdLvl2, category.CategoryIdLvl3, category.CategoryIdLvl4, category.CategoryIdLvl5, category.CategoryIdLvl6)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -348,6 +390,9 @@ func (s *server) DeleteProductServiceCategories(w http.ResponseWriter, r *http.R
 
 	if strings.Contains(url, "productservicecategories") {
 		rowsEffected, err = s.db.DeleteProductServiceCategories(id)
+	}
+	if strings.Contains(url, "ticketcategories") {
+		rowsEffected, err = s.db.DeleteTicketCategories(id)
 	}
 	if strings.Contains(url, "servicecataloglvl1") {
 		rowsEffected, err = s.db.DeleteServiceCatalogLvL1(id)
