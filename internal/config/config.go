@@ -16,6 +16,8 @@ type Config struct {
 	Username string `envconfig:"MYAPP_username"`
 	Password string `envconfig:"MYAPP_password"`
 	Database string `envconfig:"MYAPP_database"`
+	AdminKey string `envconfig:"MYAPP_adminkey"`
+	UserKey  string `envconfig:"MYAPP_userkey"`
 }
 
 //InitConfig initializes the AppConfig

@@ -2,10 +2,13 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
+	"time"
 
-	//"github.com/SAP-samples/kyma-runtime-extension-samples/api-mssql-go/internal/db"
+	"github.com/golang-jwt/jwt"
+	"github.com/tz19003/KymaTickets/tree/master/internal/config"
 	"github.com/tz19003/KymaTickets/tree/master/internal/db"
 )
 
@@ -38,6 +41,91 @@ func InitAPIServer() *server {
 	server := &server{}
 	server.db = db.InitDatabase()
 	return server
+}
+
+func (s *server) AuthUser(w http.ResponseWriter, r *http.Request) {
+
+	config := config.GetConfig()
+
+	adminKeyConfig := config.AdminKey
+	userKeyConfig := config.UserKey
+
+	apiKeyAdmin := r.Header.Get("apiKeyAdmin")
+	apiKeyUser := r.Header.Get("apiKeyUser")
+
+	if apiKeyAdmin != "" {
+
+		var signingKey = []byte(adminKeyConfig)
+
+		log.Printf(apiKeyAdmin)
+		log.Printf(string(signingKey))
+
+		isAdmin := "true"
+
+		if apiKeyAdmin == string(signingKey) {
+			token, err := GenerateJWT(signingKey, isAdmin)
+
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			js, _ := json.Marshal(token)
+
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(js)
+
+		} else {
+
+			http.Error(w, "auth failed", http.StatusUnauthorized)
+		}
+
+	} else if apiKeyUser != "" {
+
+		var signingKey = []byte(userKeyConfig)
+
+		log.Printf(apiKeyUser)
+		log.Printf(string(signingKey))
+
+		isAdmin := "false"
+
+		if apiKeyUser == string(signingKey) {
+			token, err := GenerateJWT(signingKey, isAdmin)
+
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			js, _ := json.Marshal(token)
+
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(js)
+
+		} else {
+
+			http.Error(w, "auth failed", http.StatusUnauthorized)
+		}
+	} else {
+
+		http.Error(w, "auth failed", http.StatusUnauthorized)
+
+	}
+}
+
+func GenerateJWT(key []byte, isAdmin string) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	claims := token.Claims.(jwt.MapClaims)
+
+	claims["admin"] = isAdmin
+	claims["exp"] = time.Now().Add(time.Minute * 25).Unix()
+
+	tokenString, err := token.SignedString(key)
+
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }
 
 func (s *server) GetTicketCategories(w http.ResponseWriter, r *http.Request) {
@@ -423,96 +511,3 @@ func (s *server) DeleteProductServiceCategories(w http.ResponseWriter, r *http.R
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }
-
-/*
-//old
-func (s *server) GetTicket(w http.ResponseWriter, r *http.Request) {
-
-	ticket_id := strings.Split(r.URL.Path, "/")[2]
-	tickets, err := s.db.GetTicket(ticket_id)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(tickets)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-func (s *server) GetTickets(w http.ResponseWriter, r *http.Request) {
-	tickets, err := s.db.GetTickets()
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(tickets)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-func (s *server) EditTicket(w http.ResponseWriter, r *http.Request) {
-
-	var ticket ticketData
-
-	defer r.Body.Close()
-	err := json.NewDecoder(r.Body).Decode(&ticket)
-
-	rowsEffected, err := s.db.EditTicket(ticket.Ticketid, ticket.Description, ticket.Status, ticket.Customername, ticket.ContactName)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(rowsEffected)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-func (s *server) AddTicket(w http.ResponseWriter, r *http.Request) {
-
-	var ticket ticketData
-
-	defer r.Body.Close()
-	err := json.NewDecoder(r.Body).Decode(&ticket)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	tickets, err := s.db.AddTicket(ticket.Ticketid, ticket.Description, ticket.Status, ticket.Customername, ticket.ContactName)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(tickets)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-func (s *server) DeleteTicket(w http.ResponseWriter, r *http.Request) {
-	ticket_id := strings.Split(r.URL.Path, "/")[2]
-	rowsEffected, err := s.db.DeleteTicket(ticket_id)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(rowsEffected)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-*/
