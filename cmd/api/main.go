@@ -8,8 +8,8 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
 
-	"github.com/tz19003/KymaTickets/tree/master/internal/api"
-	"github.com/tz19003/KymaTickets/tree/master/internal/config"
+	"github.com/tszalama/api-servicecatalog/tree/main/internal/api"
+	"github.com/tszalama/api-servicecatalog/tree/main/internal/config"
 )
 
 // All incoming requests have to go trough this midlleware function

@@ -1,5 +1,5 @@
-//module github.com/SAP-samples/kyma-runtime-extension-samples/api-mssql-go
-module github.com/tz19003/KymaTickets/tree/master
+
+module github.com/tszalama/api-servicecatalog/tree/main
 
 go 1.14
 

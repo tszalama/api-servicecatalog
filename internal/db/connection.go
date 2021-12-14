@@ -6,18 +6,26 @@ import (
 	"log"
 	"time"
 
-	//"github.com/SAP-samples/kyma-runtime-extension-samples/api-mssql-go/internal/config"
-	"github.com/tz19003/KymaTickets/tree/master/internal/config"
 	_ "github.com/denisenkom/go-mssqldb"
+	"github.com/tszalama/api-servicecatalog/tree/main/internal/config"
 )
-
-// var db *sql.DB
 
 type Server struct {
 	db *sql.DB
 }
 
-//InitDatabase - sets database connection configuration
+//Function retrieves the configuration and returns appropiate database connection string
+func getConnString() string {
+
+	config := config.GetConfig()
+
+	connString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%s;database=%s;",
+		config.Server, config.Username, config.Password, config.Port, config.Database)
+
+	return connString
+}
+
+//Function sets database connection
 func InitDatabase() *Server {
 	var err error
 
@@ -36,18 +44,7 @@ func InitDatabase() *Server {
 	return server
 }
 
-//gets configuration and returns appropiate connection string
-func getConnString() string {
-
-	config := config.GetConfig()
-
-	connString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%s;database=%s;",
-		config.Server, config.Username, config.Password, config.Port, config.Database)
-
-	return connString
-}
-
-//will verify the connection is available or generate a new one
+//Function verifies that connection is ok or generates a new one
 func (s *Server) getConnection() {
 
 	err := s.db.Ping()
