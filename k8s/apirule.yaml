@@ -5,7 +5,7 @@ metadata:
 spec:
   gateway: kyma-gateway.kyma-system.svc.cluster.local
   rules:
-    - path: /tickets|/tickets/.*|/ticketcategories/.*|/ticketcategories|/productservicecategories/.*|/servicecataloglvl1/.*|/servicecataloglvl2/.*|/servicecataloglvl3/.*|/servicecataloglvl4/.*|/servicecataloglvl5/.*|/servicecataloglvl6/.*|/productservicecategories|/servicecataloglvl1|/servicecataloglvl2|/servicecataloglvl3|/servicecataloglvl4|/servicecataloglvl5|/servicecataloglvl6
+    - path: /tickets|/tickets/.*|/ticketcategories/.*|/ticketcategories|/productservicecategories/.*|/servicecataloglvl1/.*|/servicecataloglvl2/.*|/servicecataloglvl3/.*|/servicecataloglvl4/.*|/servicecataloglvl5/.*|/servicecataloglvl6/.*|/productservicecategories|/servicecataloglvl1|/servicecataloglvl2|/servicecataloglvl3|/servicecataloglvl4|/servicecataloglvl5|/servicecataloglvl6|/auth
       accessStrategies:
         - config: {}
           handler: noop

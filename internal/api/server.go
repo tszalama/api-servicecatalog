@@ -12,6 +12,7 @@ import (
 	"github.com/tz19003/KymaTickets/tree/master/internal/db"
 )
 
+//Ticket category structure (matches DB table structure)
 type TicketCategories struct {
 	Ticketid       string `json:"ticket_id"`
 	Productid      string `json:"product_id"`
@@ -23,10 +24,13 @@ type TicketCategories struct {
 	CategoryIdLvl6 string `json:"category_id_lvl6"`
 }
 
+//Product structure (matches DB table structure)
 type ProductServiceCategories struct {
 	Id          string `json:"id"`
 	Description string `json:"description"`
 }
+
+//Service category level structure (matches DB table structure)
 type ServiceCatalogLvL struct {
 	Id          string `json:"id"`
 	ParentId    string `json:"parent_id"`
@@ -37,6 +41,7 @@ type server struct {
 	db *db.Server
 }
 
+//Initialize server
 func InitAPIServer() *server {
 	server := &server{}
 	server.db = db.InitDatabase()

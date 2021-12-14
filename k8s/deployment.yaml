@@ -47,6 +47,16 @@ spec:
                 secretKeyRef:
                   key: password
                   name: mssql
+            - name: MYAPP_adminkey
+              valueFrom:
+                configMapKeyRef:
+                  key: adminkey
+                  name: api-mssql-go
+            - name: MYAPP_userkey
+              valueFrom:
+                configMapKeyRef:
+                  key: userkey
+                  name: api-mssql-go
 ---
 apiVersion: v1
 kind: Service

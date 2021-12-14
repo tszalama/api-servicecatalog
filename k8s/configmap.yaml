@@ -8,3 +8,5 @@ data:
   database: ServiceCategoriesDB
   host: mssql.servicecat.svc.cluster.local
   port: "1433"
+  adminkey: wowAdmin123
+  userkey: wowUser123

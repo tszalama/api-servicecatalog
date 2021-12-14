@@ -89,21 +89,8 @@ func (s *Server) GetServiceCatalogLvL6(id string) ([]ServiceCatalogLvL, error) {
 	return s.queryServiceCatalogLvL(tsql, id)
 }
 
-/*
-func (s *Server) AddProductServiceCategories(product_id string) ([]ProductServiceCategories, error) {
-	tsql := fmt.Sprintf("INSERT INTO ProductServiceCategories(product_id) VALUES(@p1);")
-	_, err := s.exec(tsql, product_id)
-	if err != nil {
-		return nil, err
-	}
-
-	tsql = fmt.Sprintf("SELECT * FROM ProductServiceCategories WHERE product_id=@p1 and id = SCOPE_IDENTITY();")
-	return s.queryProductServiceCategories(tsql, product_id)
-}
-*/
-//TEST ------------------------------------
 func (s *Server) AddProductServiceCategories(id string, description string) ([]ProductServiceCategories, error) {
-	//tsqlExec := fmt.Sprintf("INSERT INTO ProductServiceCategories(product_id) VALUES(@p1);")
+
 	tsqlQuery := fmt.Sprintf("INSERT INTO ProductServiceCategories(id,description) VALUES(@p1,@p2); SELECT * FROM ProductServiceCategories WHERE id = @p1;")
 
 	return s.queryProductServiceCategories(tsqlQuery, id, description)
@@ -181,108 +168,6 @@ func (s *Server) DeleteServiceCatalogLvL6(id string) (RowsAffected, error) {
 	return s.deleteEntry(tsql, id)
 }
 
-//TEST ------------------------------------
-/*
-func (s *Server) AddServiceCatalogLvL1(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("INSERT INTO ServiceCatalogLvL1(parent_id, description) VALUES(@p1,@p2);")
-	_, err := s.exec(tsql, parent_id, description)
-	if err != nil {
-		return nil, err
-	}
-
-	tsql = fmt.Sprintf("SELECT * FROM ServiceCatalogLvL1 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, parent_id, description)
-}
-
-func (s *Server) AddServiceCatalogLvL2(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("INSERT INTO ServiceCatalogLvL2(parent_id, description) VALUES(@p1,@p2);")
-	_, err := s.exec(tsql, parent_id, description)
-	if err != nil {
-		return nil, err
-	}
-
-	tsql = fmt.Sprintf("SELECT * FROM ServiceCatalogLvL2 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, parent_id, description)
-}
-
-func (s *Server) AddServiceCatalogLvL3(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("INSERT INTO ServiceCatalogLvL3(parent_id, description) VALUES(@p1,@p2);")
-	_, err := s.exec(tsql, parent_id, description)
-	if err != nil {
-		return nil, err
-	}
-
-	tsql = fmt.Sprintf("SELECT * FROM ServiceCatalogLvL3 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, parent_id, description)
-}
-
-func (s *Server) AddServiceCatalogLvL4(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("INSERT INTO ServiceCatalogLvL4(parent_id, description) VALUES(@p1,@p2);")
-	_, err := s.exec(tsql, parent_id, description)
-	if err != nil {
-		return nil, err
-	}
-
-	tsql = fmt.Sprintf("SELECT * FROM ServiceCatalogLvL4 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, parent_id, description)
-}
-
-func (s *Server) AddServiceCatalogLvL5(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("INSERT INTO ServiceCatalogLvL5(parent_id, description) VALUES(@p1,@p2);")
-	_, err := s.exec(tsql, parent_id, description)
-	if err != nil {
-		return nil, err
-	}
-
-	tsql = fmt.Sprintf("SELECT * FROM ServiceCatalogLvL5 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, parent_id, description)
-}
-
-func (s *Server) AddServiceCatalogLvL6(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("INSERT INTO ServiceCatalogLvL6(parent_id, description) VALUES(@p1,@p2);")
-	_, err := s.exec(tsql, parent_id, description)
-	if err != nil {
-		return nil, err
-	}
-
-	tsql = fmt.Sprintf("SELECT * FROM ServiceCatalogLvL6 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, parent_id, description)
-}
-*/
-
-/*
-func (s *Server) GetTicket(ticket_id string) ([]Ticket, error) {
-	tsql := fmt.Sprintf("SELECT * FROM Tickets WHERE ticket_id=@p1;")
-	return s.query(tsql, ticket_id)
-}
-
-func (s *Server) GetTickets() ([]Ticket, error) {
-	tsql := fmt.Sprintf("SELECT * FROM Tickets;")
-	return s.query(tsql, nil)
-}
-
-func (s *Server) AddTicket(ticket_id string, description string, status string, customer_name string, contact_name string) ([]Ticket, error) {
-	tsql := fmt.Sprintf("INSERT INTO Tickets(ticket_id, description, status, customer_name, contact_name) VALUES(@p1,@p2,@p3,@p4,@p5);")
-	_, err := s.exec(tsql, ticket_id, description, status, customer_name, contact_name)
-	if err != nil {
-		return nil, err
-	}
-
-	tsql = fmt.Sprintf("SELECT * FROM Tickets WHERE ticket_id=@p1;")
-	return s.query(tsql, ticket_id, description, status, customer_name, contact_name)
-}
-
-func (s *Server) EditTicket(ticket_id string, description string, status string, customer_name string, contact_name string) (RowsAffected, error) {
-	tsql := fmt.Sprintf("UPDATE Tickets SET description=@p2 WHERE ticket_id=@p1")
-	return s.exec(tsql, ticket_id, description)
-}
-
-func (s *Server) DeleteTicket(ticket_id string) (RowsAffected, error) {
-	tsql := fmt.Sprintf("DELETE FROM Tickets WHERE ticket_id=@p1")
-	return s.exec(tsql, ticket_id)
-}
-*/
-
 func (s *Server) deleteEntry(tsql string, args ...interface{}) (RowsAffected, error) {
 
 	s.getConnection()
@@ -305,7 +190,6 @@ func (s *Server) deleteEntry(tsql string, args ...interface{}) (RowsAffected, er
 
 }
 
-//TEST----------------------------------------------------------------------------------------------------------
 func (s *Server) queryTicketCategories(tsqlQuery string, args ...interface{}) ([]TicketCategories, error) {
 
 	s.getConnection()
@@ -416,98 +300,3 @@ func (s *Server) queryServiceCatalogLvL(tsqlQuery string, args ...interface{}) (
 	}
 	return categories, nil
 }
-
-//TEST----------------------------------------------------------------------------------------------------------
-
-/*
-
-func (s *Server) queryProductServiceCategories(tsql string, args ...interface{}) ([]ProductServiceCategories, error) {
-
-	s.getConnection()
-
-	category := ProductServiceCategories{}
-	categories := []ProductServiceCategories{}
-
-	log.Printf("Executing SQL: %s \n", tsql)
-	log.Printf("With args: %s \n", args...)
-
-	rows, err := s.db.Query(tsql, args...)
-
-	if err != nil {
-		log.Println("failed...")
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan(&category.Id, &category.ProductId)
-		if err != nil {
-			return nil, err
-		}
-		categories = append(categories, category)
-	}
-
-	return categories, nil
-}
-
-func (s *Server) queryServiceCatalogLvL(tsql string, args ...interface{}) ([]ServiceCatalogLvL, error) {
-
-	s.getConnection()
-
-	category := ServiceCatalogLvL{}
-	categories := []ServiceCatalogLvL{}
-
-	log.Printf("Executing SQL: %s \n", tsql)
-	log.Printf("With args: %s \n", args...)
-
-	rows, err := s.db.Query(tsql, args...)
-
-	if err != nil {
-		log.Println("failed...")
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan(&category.Id, &category.ParentId, &category.Description)
-		if err != nil {
-			return nil, err
-		}
-		categories = append(categories, category)
-	}
-
-	return categories, nil
-}
-
-func (s *Server) query(tsql string, args ...interface{}) ([]Ticket, error) {
-
-	s.getConnection()
-
-	ticket := Ticket{}
-	tickets := []Ticket{}
-
-	log.Printf("Executing SQL: %s \n", tsql)
-	log.Printf("With args: %s \n", args...)
-
-	rows, err := s.db.Query(tsql, args...)
-
-	if err != nil {
-		log.Println("failed...")
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan(&ticket.Ticketid, &ticket.Description, &ticket.Status, &ticket.Customername, &ticket.ContactName, &ticket.Created)
-		if err != nil {
-			return nil, err
-		}
-		tickets = append(tickets, ticket)
-	}
-
-	return tickets, nil
-}
-*/

@@ -8,11 +8,11 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
 
-	//"github.com/SAP-samples/kyma-runtime-extension-samples/api-mssql-go/internal/api"
 	"github.com/tz19003/KymaTickets/tree/master/internal/api"
 	"github.com/tz19003/KymaTickets/tree/master/internal/config"
 )
 
+// All incoming requests have to go trough this midlleware function
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -23,7 +23,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		// Do stuff here
 		log.Println(r.RequestURI)
 
-		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		// If path is not /auth, validate provided JWT token
 		if r.RequestURI != "/auth" {
 
 			// Parse token using ecription alg HMAC and signing key
@@ -31,6 +31,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 			if r.Header["Token"] != nil {
 
+				//First parse JWT token without verification to get the user role claim
 				claims := jwt.MapClaims{}
 				_, _, err := new(jwt.Parser).ParseUnverified(r.Header["Token"][0], claims)
 				if err != nil {
@@ -40,7 +41,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 				userType := ""
 
-				// Get user type from JWT token claims
+				// Get user type from JWT token claims and determine if the token has to be checked agains the admin key or the user key
 				for key, val := range claims {
 					fmt.Printf("Key: %v, value: %v\n", key, val)
 					if key == "admin" && val == "false" {
@@ -51,15 +52,16 @@ func loggingMiddleware(next http.Handler) http.Handler {
 						userType = "admin"
 					}
 				}
-				//var mySigningKey = []byte("mysupersecretphrase")
+
 				signingKey := []byte(keyString)
 
-				// Regular users should only be able to access GET methods
+				// If user type in JWT token is "user" return 401 (Regular users should only be able to access GET methods)
 				if userType == "user" && r.Method != "GET" {
 					http.Error(w, "not authorized", http.StatusUnauthorized)
 					return
 				}
 
+				//Validate the provided JWT token with either the admin or user key (based on the determined claim)
 				token, err := jwt.Parse(r.Header["Token"][0], func(token *jwt.Token) (interface{}, error) {
 					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 						return nil, fmt.Errorf("There is an error")
@@ -68,20 +70,22 @@ func loggingMiddleware(next http.Handler) http.Handler {
 					return signingKey, nil
 				})
 
+				//If token verification failed, return 401
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusUnauthorized)
 				}
 
-				// if token is valid serve original endpoint
+				// if token is valid, user is authorized to access API.
+				// Proceed to original endpoint
 				if token.Valid {
 					next.ServeHTTP(w, r)
 				}
 
-			} else {
+			} else { //If there is no token provided at all, return 401
 				http.Error(w, "not authorized", http.StatusUnauthorized)
 			}
 
-		} else {
+		} else { //If request path is /auth, verify login credentials and return JWT token that can be used for further requests
 			next.ServeHTTP(w, r)
 			log.Printf("auth required")
 		}
@@ -93,8 +97,14 @@ func main() {
 
 	apiServer := api.InitAPIServer()
 
+	// Route all incoming requests trough the middleware function
 	router.Use(loggingMiddleware)
 
+	/*
+		---ROUTER DEFINITION---
+
+		Defines the allowed routes, methods and which handler to call for each request
+	*/
 	router.HandleFunc("/auth", apiServer.AuthUser).Methods("GET")
 
 	router.HandleFunc("/productservicecategories/{id}", apiServer.GetProductServiceCategories).Methods("GET")
@@ -124,8 +134,6 @@ func main() {
 	router.HandleFunc("/servicecataloglvl4/{id}", apiServer.DeleteProductServiceCategories).Methods("DELETE")
 	router.HandleFunc("/servicecataloglvl5/{id}", apiServer.DeleteProductServiceCategories).Methods("DELETE")
 	router.HandleFunc("/servicecataloglvl6/{id}", apiServer.DeleteProductServiceCategories).Methods("DELETE")
-
-	//router.HandleFunc("/orderCodeEvent", apiServer.ConsumeOrderCode).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
