@@ -55,8 +55,8 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 				signingKey := []byte(keyString)
 
-				// If user type in JWT token is "user" return 401 (Regular users should only be able to access GET methods)
-				if userType == "user" && r.Method != "GET" {
+				// Regular users should only be able to access GET methods unless the requested URL is TicketCategories
+				if userType == "user" && r.Method != "GET" && r.RequestURI != "/ticketcategories" {
 					http.Error(w, "not authorized", http.StatusUnauthorized)
 					return
 				}
