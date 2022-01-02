@@ -197,11 +197,32 @@ func (s *server) GetAllProductServiceCategories(w http.ResponseWriter, r *http.R
 	w.Write(js)
 }
 
-//Function gets a specific Service Catalog Level 1 entry from Database based on the id in the URL path and returns it to the user
-func (s *server) GetServiceCatalogLvL1(w http.ResponseWriter, r *http.Request) {
+//Function gets a specific Service Catalog Level N entry from Database based on the id in the URL path and returns it to the user
+func (s *server) GetServiceCatalogLvL(w http.ResponseWriter, r *http.Request) {
 
 	id := strings.Split(r.URL.Path, "/")[2]
-	categories, err := s.db.GetServiceCatalogLvL1(id)
+	url := r.URL.Path
+	var categories []db.ServiceCatalogLvL
+	var err error
+
+	if strings.Contains(url, "servicecataloglvl1") {
+		categories, err = s.db.GetServiceCatalogLvL1(id)
+	}
+	if strings.Contains(url, "servicecataloglvl2") {
+		categories, err = s.db.GetServiceCatalogLvL2(id)
+	}
+	if strings.Contains(url, "servicecataloglvl3") {
+		categories, err = s.db.GetServiceCatalogLvL3(id)
+	}
+	if strings.Contains(url, "servicecataloglvl4") {
+		categories, err = s.db.GetServiceCatalogLvL4(id)
+	}
+	if strings.Contains(url, "servicecataloglvl5") {
+		categories, err = s.db.GetServiceCatalogLvL5(id)
+	}
+	if strings.Contains(url, "servicecataloglvl6") {
+		categories, err = s.db.GetServiceCatalogLvL6(id)
+	}
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -214,92 +235,7 @@ func (s *server) GetServiceCatalogLvL1(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-//Function gets a specific Service Catalog Level 2 entry from Database based on the id in the URL path and returns it to the user
-func (s *server) GetServiceCatalogLvL2(w http.ResponseWriter, r *http.Request) {
-
-	id := strings.Split(r.URL.Path, "/")[2]
-	categories, err := s.db.GetServiceCatalogLvL2(id)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function gets a specific Service Catalog Level 3 entry from Database based on the id in the URL path and returns it to the user
-func (s *server) GetServiceCatalogLvL3(w http.ResponseWriter, r *http.Request) {
-
-	id := strings.Split(r.URL.Path, "/")[2]
-	categories, err := s.db.GetServiceCatalogLvL3(id)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function gets a specific Service Catalog Level 4 entry from Database based on the id in the URL path and returns it to the user
-func (s *server) GetServiceCatalogLvL4(w http.ResponseWriter, r *http.Request) {
-
-	id := strings.Split(r.URL.Path, "/")[2]
-	categories, err := s.db.GetServiceCatalogLvL4(id)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function gets a specific Service Catalog Level 5 entry from Database based on the id in the URL path and returns it to the user
-func (s *server) GetServiceCatalogLvL5(w http.ResponseWriter, r *http.Request) {
-
-	id := strings.Split(r.URL.Path, "/")[2]
-	categories, err := s.db.GetServiceCatalogLvL5(id)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function gets a specific Service Catalog Level 6 entry from Database based on the id in the URL path and returns it to the user
-func (s *server) GetServiceCatalogLvL6(w http.ResponseWriter, r *http.Request) {
-
-	id := strings.Split(r.URL.Path, "/")[2]
-	categories, err := s.db.GetServiceCatalogLvL6(id)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function deletes Service Category Level from database and return the affected row count to client
+//Function deletes a category in Service Category Level N from database and return the affected row count to client
 func (s *server) DeleteProductServiceCategories(w http.ResponseWriter, r *http.Request) {
 
 	url := r.URL.Path
@@ -381,8 +317,6 @@ func (s *server) AddProductServiceCategories(w http.ResponseWriter, r *http.Requ
 }
 
 //Function saves Ticket data to the database and returns a copy of the saved data to the client
-
-//Similar functionality to AddProductServiceCategories (different function calls and data structure)
 func (s *server) AddTicketCategories(w http.ResponseWriter, r *http.Request) {
 
 	var category TicketCategories
@@ -408,9 +342,8 @@ func (s *server) AddTicketCategories(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-//Function saves Service Catalog Level 1 data to the database and returns a copy of the saved data to the client
-//Similar functionality to AddProductServiceCategories (different function calls and data structure)
-func (s *server) AddServiceCatalogLvL1(w http.ResponseWriter, r *http.Request) {
+//Function saves Service Catalog Level N data to the database and returns a copy of the saved data to the client
+func (s *server) AddServiceCatalogLvL(w http.ResponseWriter, r *http.Request) {
 
 	var category ServiceCatalogLvL
 
@@ -422,143 +355,27 @@ func (s *server) AddServiceCatalogLvL1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories, err := s.db.AddServiceCatalogLvL1(category.ParentId, category.Description)
+	url := r.URL.Path
+	var categories []db.ServiceCatalogLvL
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if strings.Contains(url, "servicecataloglvl1") {
+		categories, err = s.db.AddServiceCatalogLvL1(category.ParentId, category.Description)
 	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function saves Service Catalog Level 2 data to the database and returns a copy of the saved data to the client
-
-//Similar functionality to AddProductServiceCategories (different function calls and data structure)
-func (s *server) AddServiceCatalogLvL2(w http.ResponseWriter, r *http.Request) {
-
-	var category ServiceCatalogLvL
-
-	defer r.Body.Close()
-	err := json.NewDecoder(r.Body).Decode(&category)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if strings.Contains(url, "servicecataloglvl2") {
+		categories, err = s.db.AddServiceCatalogLvL2(category.ParentId, category.Description)
 	}
-
-	categories, err := s.db.AddServiceCatalogLvL2(category.ParentId, category.Description)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if strings.Contains(url, "servicecataloglvl3") {
+		categories, err = s.db.AddServiceCatalogLvL3(category.ParentId, category.Description)
 	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function saves Service Catalog Level 3 data to the database and returns a copy of the saved data to the client
-//Similar functionality to AddProductServiceCategories (different function calls and data structure)
-func (s *server) AddServiceCatalogLvL3(w http.ResponseWriter, r *http.Request) {
-
-	var category ServiceCatalogLvL
-
-	defer r.Body.Close()
-	err := json.NewDecoder(r.Body).Decode(&category)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if strings.Contains(url, "servicecataloglvl4") {
+		categories, err = s.db.AddServiceCatalogLvL4(category.ParentId, category.Description)
 	}
-
-	categories, err := s.db.AddServiceCatalogLvL3(category.ParentId, category.Description)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if strings.Contains(url, "servicecataloglvl5") {
+		categories, err = s.db.AddServiceCatalogLvL5(category.ParentId, category.Description)
 	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function saves Service Catalog Level 4 data to the database and returns a copy of the saved data to the client
-//Similar functionality to AddProductServiceCategories (different function calls and data structure)
-func (s *server) AddServiceCatalogLvL4(w http.ResponseWriter, r *http.Request) {
-
-	var category ServiceCatalogLvL
-
-	defer r.Body.Close()
-	err := json.NewDecoder(r.Body).Decode(&category)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if strings.Contains(url, "servicecataloglvl6") {
+		categories, err = s.db.AddServiceCatalogLvL6(category.ParentId, category.Description)
 	}
-
-	categories, err := s.db.AddServiceCatalogLvL4(category.ParentId, category.Description)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function saves Service Catalog Level 5 data to the database and returns a copy of the saved data to the client
-//Similar functionality to AddProductServiceCategories (different function calls and data structure)
-func (s *server) AddServiceCatalogLvL5(w http.ResponseWriter, r *http.Request) {
-
-	var category ServiceCatalogLvL
-
-	defer r.Body.Close()
-	err := json.NewDecoder(r.Body).Decode(&category)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	categories, err := s.db.AddServiceCatalogLvL5(category.ParentId, category.Description)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	js, _ := json.Marshal(categories)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
-}
-
-//Function saves Service Catalog Level 6 data to the database and returns a copy of the saved data to the client
-//Similar functionality to AddProductServiceCategories (different function calls and data structure)
-func (s *server) AddServiceCatalogLvL6(w http.ResponseWriter, r *http.Request) {
-
-	var category ServiceCatalogLvL
-
-	defer r.Body.Close()
-	err := json.NewDecoder(r.Body).Decode(&category)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	categories, err := s.db.AddServiceCatalogLvL6(category.ParentId, category.Description)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
