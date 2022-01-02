@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
@@ -56,7 +57,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 				signingKey := []byte(keyString)
 
 				// Regular users should only be able to access GET methods unless the requested URL is TicketCategories
-				if userType == "user" && r.Method != "GET" && r.RequestURI != "/ticketcategories" {
+				if userType == "user" && r.Method != "GET" && strings.Contains(r.RequestURI, "ticketcategories") {
 					http.Error(w, "not authorized", http.StatusUnauthorized)
 					return
 				}
