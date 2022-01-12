@@ -13,7 +13,10 @@ import (
 	"github.com/tszalama/api-servicecatalog/tree/main/internal/config"
 )
 
+//Based on examples from https://developers.sap.com/tutorials/cp-kyma-api-mssql-golang.html
+
 // All incoming requests have to go trough this midlleware function
+// Source : https://stackoverflow.com/questions/53983638/how-can-i-set-up-the-logging-context-from-middleware
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -57,7 +60,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 				signingKey := []byte(keyString)
 
 				// Regular users should only be able to access GET methods unless the requested URL is TicketCategories
-				if userType == "user" && r.Method != "GET" && strings.Contains(r.RequestURI, "ticketcategories") {
+				if userType == "user" && r.Method != "GET" && !strings.Contains(r.RequestURI, "ticketcategories") {
 					http.Error(w, "not authorized", http.StatusUnauthorized)
 					return
 				}

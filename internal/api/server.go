@@ -206,22 +206,22 @@ func (s *server) GetServiceCatalogLvL(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	if strings.Contains(url, "servicecataloglvl1") {
-		categories, err = s.db.GetServiceCatalogLvL1(id)
+		categories, err = s.db.GetServiceCatalogLvL(id, "1")
 	}
 	if strings.Contains(url, "servicecataloglvl2") {
-		categories, err = s.db.GetServiceCatalogLvL2(id)
+		categories, err = s.db.GetServiceCatalogLvL(id, "2")
 	}
 	if strings.Contains(url, "servicecataloglvl3") {
-		categories, err = s.db.GetServiceCatalogLvL3(id)
+		categories, err = s.db.GetServiceCatalogLvL(id, "3")
 	}
 	if strings.Contains(url, "servicecataloglvl4") {
-		categories, err = s.db.GetServiceCatalogLvL4(id)
+		categories, err = s.db.GetServiceCatalogLvL(id, "4")
 	}
 	if strings.Contains(url, "servicecataloglvl5") {
-		categories, err = s.db.GetServiceCatalogLvL5(id)
+		categories, err = s.db.GetServiceCatalogLvL(id, "5")
 	}
 	if strings.Contains(url, "servicecataloglvl6") {
-		categories, err = s.db.GetServiceCatalogLvL6(id)
+		categories, err = s.db.GetServiceCatalogLvL(id, "6")
 	}
 
 	if err != nil {
@@ -254,22 +254,22 @@ func (s *server) DeleteProductServiceCategories(w http.ResponseWriter, r *http.R
 		rowsEffected, err = s.db.DeleteTicketCategories(id)
 	}
 	if strings.Contains(url, "servicecataloglvl1") {
-		rowsEffected, err = s.db.DeleteServiceCatalogLvL1(id)
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL(id, "1")
 	}
 	if strings.Contains(url, "servicecataloglvl2") {
-		rowsEffected, err = s.db.DeleteServiceCatalogLvL2(id)
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL(id, "2")
 	}
 	if strings.Contains(url, "servicecataloglvl3") {
-		rowsEffected, err = s.db.DeleteServiceCatalogLvL3(id)
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL(id, "3")
 	}
 	if strings.Contains(url, "servicecataloglvl4") {
-		rowsEffected, err = s.db.DeleteServiceCatalogLvL4(id)
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL(id, "4")
 	}
 	if strings.Contains(url, "servicecataloglvl5") {
-		rowsEffected, err = s.db.DeleteServiceCatalogLvL5(id)
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL(id, "5")
 	}
 	if strings.Contains(url, "servicecataloglvl6") {
-		rowsEffected, err = s.db.DeleteServiceCatalogLvL6(id)
+		rowsEffected, err = s.db.DeleteServiceCatalogLvL(id, "6")
 	}
 
 	//If data deletion failed, return status - internal server error
@@ -359,22 +359,22 @@ func (s *server) AddServiceCatalogLvL(w http.ResponseWriter, r *http.Request) {
 	var categories []db.ServiceCatalogLvL
 
 	if strings.Contains(url, "servicecataloglvl1") {
-		categories, err = s.db.AddServiceCatalogLvL1(category.ParentId, category.Description)
+		categories, err = s.db.AddServiceCatalogLvL(category.ParentId, category.Description, "1")
 	}
 	if strings.Contains(url, "servicecataloglvl2") {
-		categories, err = s.db.AddServiceCatalogLvL2(category.ParentId, category.Description)
+		categories, err = s.db.AddServiceCatalogLvL(category.ParentId, category.Description, "2")
 	}
 	if strings.Contains(url, "servicecataloglvl3") {
-		categories, err = s.db.AddServiceCatalogLvL3(category.ParentId, category.Description)
+		categories, err = s.db.AddServiceCatalogLvL(category.ParentId, category.Description, "3")
 	}
 	if strings.Contains(url, "servicecataloglvl4") {
-		categories, err = s.db.AddServiceCatalogLvL4(category.ParentId, category.Description)
+		categories, err = s.db.AddServiceCatalogLvL(category.ParentId, category.Description, "4")
 	}
 	if strings.Contains(url, "servicecataloglvl5") {
-		categories, err = s.db.AddServiceCatalogLvL5(category.ParentId, category.Description)
+		categories, err = s.db.AddServiceCatalogLvL(category.ParentId, category.Description, "5")
 	}
 	if strings.Contains(url, "servicecataloglvl6") {
-		categories, err = s.db.AddServiceCatalogLvL6(category.ParentId, category.Description)
+		categories, err = s.db.AddServiceCatalogLvL(category.ParentId, category.Description, "6")
 	}
 
 	if err != nil {

@@ -10,3 +10,4 @@ data:
   port: "1433"
   adminkey: wowAdmin123
   userkey: wowUser123
+##Based on examples from https://developers.sap.com/tutorials/cp-kyma-api-mssql-golang.html

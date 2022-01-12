@@ -69,38 +69,8 @@ func (s *Server) GetAllProductServiceCategories() ([]ProductServiceCategories, e
 }
 
 //Function defines and executes SQL querry that gets a specific Level 1 Service Category from the database based on the provided Parent Id
-func (s *Server) GetServiceCatalogLvL1(id string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL1 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, id)
-}
-
-//Function defines and executes SQL querry that gets a specific Level 2 Service Category from the database based on the provided Parent Id
-func (s *Server) GetServiceCatalogLvL2(id string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL2 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, id)
-}
-
-//Function defines and executes SQL querry that gets a specific Level 3 Service Category from the database based on the provided Parent Id
-func (s *Server) GetServiceCatalogLvL3(id string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL3 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, id)
-}
-
-//Function defines and executes SQL querry that gets a specific Level 4 Service Category from the database based on the provided Parent Id
-func (s *Server) GetServiceCatalogLvL4(id string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL4 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, id)
-}
-
-//Function defines and executes SQL querry that gets a specific Level 5 Service Category from the database based on the provided Parent Id
-func (s *Server) GetServiceCatalogLvL5(id string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL5 WHERE parent_id=@p1;")
-	return s.queryServiceCatalogLvL(tsql, id)
-}
-
-//Function defines and executes SQL querry that gets a specific Level 6 Service Category from the database based on the provided Parent Id
-func (s *Server) GetServiceCatalogLvL6(id string) ([]ServiceCatalogLvL, error) {
-	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL6 WHERE parent_id=@p1;")
+func (s *Server) GetServiceCatalogLvL(id string, lvl string) ([]ServiceCatalogLvL, error) {
+	tsql := fmt.Sprintf("SELECT * FROM ServiceCatalogLvL%s WHERE parent_id=@p1;", lvl)
 	return s.queryServiceCatalogLvL(tsql, id)
 }
 
@@ -113,48 +83,12 @@ func (s *Server) AddProductServiceCategories(id string, description string) ([]P
 }
 
 //Function defines and executes SQL querry that saves Level 1 Service Catelog data to the database and returns the created entry
-func (s *Server) AddServiceCatalogLvL1(parent_id string, description string) ([]ServiceCatalogLvL, error) {
+func (s *Server) AddServiceCatalogLvL(parent_id string, description string, lvl string) ([]ServiceCatalogLvL, error) {
 	/* NOTE
 	Selection has to be done via SCOPE_IDENTITY which returns the last used idenity in the current session
-	This is beacause the ID is generated automaticaly in the backend by SQL IDENTITY and is not known upon creation
+	This is beacause the ID is generated automaticaly in the backend by SQL IDENTITY and is not otherwise known upon creation
 	*/
-	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL1(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL1 WHERE id = SCOPE_IDENTITY();")
-
-	return s.queryServiceCatalogLvL(tsqlQuerry, parent_id, description)
-}
-
-//Function defines and executes SQL querry that saves Level 2 Service Catelog data to the database and returns the created entry
-func (s *Server) AddServiceCatalogLvL2(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-
-	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL2(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL2 WHERE id = SCOPE_IDENTITY();")
-
-	return s.queryServiceCatalogLvL(tsqlQuerry, parent_id, description)
-}
-
-//Function defines and executes SQL querry that saves Level 3 Service Catelog data to the database and returns the created entry
-func (s *Server) AddServiceCatalogLvL3(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL3(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL3 WHERE id = SCOPE_IDENTITY();")
-
-	return s.queryServiceCatalogLvL(tsqlQuerry, parent_id, description)
-}
-
-//Function defines and executes SQL querry that saves Level 4 Service Catelog data to the database and returns the created entry
-func (s *Server) AddServiceCatalogLvL4(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL4(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL4 WHERE id = SCOPE_IDENTITY();")
-
-	return s.queryServiceCatalogLvL(tsqlQuerry, parent_id, description)
-}
-
-//Function defines and executes SQL querry that saves Level 5 Service Catelog data to the database and returns the created entry
-func (s *Server) AddServiceCatalogLvL5(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL5(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL5 WHERE id = SCOPE_IDENTITY();")
-
-	return s.queryServiceCatalogLvL(tsqlQuerry, parent_id, description)
-}
-
-//Function defines and executes SQL querry that saves Level 6 Service Catelog data to the database and returns the created entry
-func (s *Server) AddServiceCatalogLvL6(parent_id string, description string) ([]ServiceCatalogLvL, error) {
-	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL6(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL6 WHERE id = SCOPE_IDENTITY();")
+	tsqlQuerry := fmt.Sprintf("INSERT INTO ServiceCatalogLvL%s(parent_id, description) VALUES(@p1,@p2); SELECT * FROM ServiceCatalogLvL1 WHERE id = SCOPE_IDENTITY();", lvl)
 
 	return s.queryServiceCatalogLvL(tsqlQuerry, parent_id, description)
 }
@@ -166,39 +100,9 @@ func (s *Server) DeleteProductServiceCategories(id string) (RowsAffected, error)
 }
 
 //Function defines and executes SQL querry that deletes a specific Level 1 Service Catalog entry from the database
-func (s *Server) DeleteServiceCatalogLvL1(id string) (RowsAffected, error) {
-	tsql := fmt.Sprintf("DELETE FROM ServiceCatalogLvL1 WHERE id=@p1")
-	log.Printf("Delete 1")
-	return s.deleteEntry(tsql, id)
-}
+func (s *Server) DeleteServiceCatalogLvL(id string, lvl string) (RowsAffected, error) {
+	tsql := fmt.Sprintf("DELETE FROM ServiceCatalogLvL%s WHERE id=@p1", lvl)
 
-//Function defines and executes SQL querry that deletes a specific Level 2 Service Catalog entry from the database
-func (s *Server) DeleteServiceCatalogLvL2(id string) (RowsAffected, error) {
-	tsql := fmt.Sprintf("DELETE FROM ServiceCatalogLvL2 WHERE id=@p1")
-	return s.deleteEntry(tsql, id)
-}
-
-//Function defines and executes SQL querry that deletes a specific Level 3 Service Catalog entry from the database
-func (s *Server) DeleteServiceCatalogLvL3(id string) (RowsAffected, error) {
-	tsql := fmt.Sprintf("DELETE FROM ServiceCatalogLvL3 WHERE id=@p1")
-	return s.deleteEntry(tsql, id)
-}
-
-//Function defines and executes SQL querry that deletes a specific Level 4 Service Catalog entry from the database
-func (s *Server) DeleteServiceCatalogLvL4(id string) (RowsAffected, error) {
-	tsql := fmt.Sprintf("DELETE FROM ServiceCatalogLvL4 WHERE id=@p1")
-	return s.deleteEntry(tsql, id)
-}
-
-//Function defines and executes SQL querry that deletes a specific Level 5 Service Catalog entry from the database
-func (s *Server) DeleteServiceCatalogLvL5(id string) (RowsAffected, error) {
-	tsql := fmt.Sprintf("DELETE FROM ServiceCatalogLvL5 WHERE id=@p1")
-	return s.deleteEntry(tsql, id)
-}
-
-//Function defines and executes SQL querry that deletes a specific Level 6 Service Catalog entry from the database
-func (s *Server) DeleteServiceCatalogLvL6(id string) (RowsAffected, error) {
-	tsql := fmt.Sprintf("DELETE FROM ServiceCatalogLvL6 WHERE id=@p1")
 	return s.deleteEntry(tsql, id)
 }
 
@@ -236,8 +140,8 @@ func (s *Server) queryTicketCategories(tsqlQuery string, args ...interface{}) ([
 	category := TicketCategories{}
 	categories := []TicketCategories{}
 
-	log.Printf("SQL Start: %s \n", tsqlQuery)
-	log.Printf("Script: %s \n", args...)
+	log.Printf("Executing SQL script: %s \n", tsqlQuery)
+	log.Printf("With arguments: %s \n", args...)
 	//Execute querry in database using the provided querry string + inserted variables (args)
 	rows, err := s.db.Query(tsqlQuery, args...)
 	//If database opperation failed, return error
@@ -266,7 +170,7 @@ func (s *Server) queryAllProductCategories(tsqlQuery string) ([]ProductServiceCa
 	category := ProductServiceCategories{}
 	categories := []ProductServiceCategories{}
 
-	log.Printf("SQL Start: %s \n", tsqlQuery)
+	log.Printf("Executing SQL script: %s \n", tsqlQuery)
 
 	//Similar to the function above but has no variables/ args because we are doing a SELECT * opperation a table
 	rows, err := s.db.Query(tsqlQuery)
@@ -295,8 +199,8 @@ func (s *Server) queryProductServiceCategories(tsqlQuery string, args ...interfa
 	category := ProductServiceCategories{}
 	categories := []ProductServiceCategories{}
 
-	log.Printf("SQL Start: %s \n", tsqlQuery)
-	log.Printf("Script: %s \n", args...)
+	log.Printf("Executing SQL script: %s \n", tsqlQuery)
+	log.Printf("With arguments: %s \n", args...)
 
 	rows, err := s.db.Query(tsqlQuery, args...)
 
@@ -324,8 +228,8 @@ func (s *Server) queryServiceCatalogLvL(tsqlQuery string, args ...interface{}) (
 	category := ServiceCatalogLvL{}
 	categories := []ServiceCatalogLvL{}
 
-	log.Printf("SQL Start: %s \n", tsqlQuery)
-	log.Printf("Script: %s \n", args...)
+	log.Printf("Executing SQL script: %s \n", tsqlQuery)
+	log.Printf("With arguments: %s \n", args...)
 
 	rows, err := s.db.Query(tsqlQuery, args...)
 

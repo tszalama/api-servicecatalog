@@ -15,7 +15,7 @@ spec:
         app: api-mssql-go
     spec:
       containers:
-        - image: tszalama/api-mssql-go-servicecat:latest #change it to your image
+        - image: tszalama/api-mssql-go-servicecat:latest
           imagePullPolicy: Always
           name: api-mssql-go
           ports:
@@ -72,3 +72,4 @@ spec:
       protocol: TCP
   selector:
     app: api-mssql-go
+##Based on examples from https://developers.sap.com/tutorials/cp-kyma-api-mssql-golang.html

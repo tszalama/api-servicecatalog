@@ -20,3 +20,5 @@ COPY --from=builder /app/api-mssql-go /app/
 
 EXPOSE 8000
 ENTRYPOINT ["/app/api-mssql-go"]
+
+##Source github.com/SAP-samples/kyma-runtime-extension-samples

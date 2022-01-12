@@ -18,3 +18,4 @@ spec:
     host: api-mssql-go-servicecat
     name: api-mssql-go
     port: 80
+##Based on examples from https://developers.sap.com/tutorials/cp-kyma-api-mssql-golang.html
